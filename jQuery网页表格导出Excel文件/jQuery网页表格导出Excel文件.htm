@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>jQuery网页表格导出Excel文件</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap-3.css">
+		<link rel="stylesheet" type="text/css" href="css/font-awesome.css">
+		<link rel="stylesheet" type="text/css" href="css/demo.css">
+	</head>
+
+	<body>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-3" style="padding:2em 0;">
+					<button type="button" class="btn btn-success btn-block" id="generate-excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i> 将表格转换为Excel</button>
+					<button type="button" class="btn btn btn-block" id="btn_add">添加数据</button>
+				</div>
+				<div class="col-md-12" style="padding:2em 0;">
+					<div class="table-responsive">
+						<table class="table table-bordered table-striped" id="test_table">
+							<thead>
+								<tr>
+									<td>序号</td>
+									<td>姓名</td>
+									<td>省份</td>
+									<td>城市</td>
+									<td>性别</td>
+									<td>职业</td>
+									<td>年龄</td>
+								</tr>
+							</thead>
+							<tbody>
+								
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	        <div class="modal-dialog" role="document">
+	            <div class="modal-content">
+	                <div class="modal-header">
+	                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="colseBtn">&times;</span></button>
+	                    <h4 class="modal-title" id="myModalLabel">新增</h4>
+	                </div>
+	                <form class="modal-body">
+	                    <div class="form-group">
+	                        <label for="txt_name">姓名</label>
+	                        <input type="text" name="name" class="form-control" id="txt_name" placeholder="姓名">
+	                    </div>
+	                    <div class="form-group">
+	                        <label for="txt_Province">省份</label>
+	                        <input type="text" name="Province" class="form-control" id="txt_Province" placeholder="省份">
+	                    </div>
+	                    <div class="form-group">
+	                        <label for="txt_city">城市</label>
+	                        <input type="text" name="city" class="form-control" id="txt_city" placeholder="城市">
+	                    </div>
+	                    <div class="form-group">
+	                        <label for="txt_sex">性别</label>
+	                        <input type="text" name="sex" class="form-control" id="txt_sex" placeholder="性别">
+	                    </div>
+	                    <div class="form-group">
+	                        <label for="txt_work">职业</label>
+	                        <input type="text" name="work" class="form-control" id="txt_work" placeholder="职业">
+	                    </div>
+	                    <div class="form-group">
+	                        <label for="txt_age">年龄</label>
+	                        <input type="text" name="age" class="form-control" id="txt_age" placeholder="年龄">
+	                    </div>
+	                </form>
+	                <div class="modal-footer">
+	                    <button type="button" class="btn btn-default colseBtn" data-dismiss="modal">关闭</button>
+	                    <button type="button" id="btn_submit" class="btn btn-primary" data-dismiss="modal">保存</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+
+	</body>
+		<!--<script src="js/jquery-1.js"></script>-->
+		<script src="js/jquery.js"></script>
+		<script>
+			$(document).ready(function(){
+				var xx = [{
+					id:1,
+					name:"杨柳柳",
+					Province:"四川",
+					city:"成都",
+					sex:"男",
+					work:"学生",
+					age:"16"
+				},{
+					id:2,
+					name:"秦晓",
+					Province:"四川",
+					city:"江油",
+					sex:"男",
+					work:"学生",
+					age:"22"
+				},{
+					id:3,
+					name:"宇峰",
+					Province:"XX",
+					city:"重庆",
+					sex:"女",
+					work:"银行职员",
+					age:"24"
+				},{
+					id:4,
+					name:"青玉",
+					Province:"河北",
+					city:"石家庄",
+					sex:"男",
+					work:"java工程师",
+					age:"21"
+				}]
+				function Build(){};
+				Build.prototype.render = function(){
+					$("#test_table tbody").html("");
+					for(i = 0; i < xx.length; i++) {
+						var html = "<tr><td>" + (i+1 )+ "</td><td>" + xx[i].name + "</td><td>" + xx[i].Province + "</td><td>" + xx[i].city + "</td><td>" + xx[i].sex + "</td><td>" + xx[i].work + "</td><td>" + xx[i].age + "</td></tr>";
+						$("#test_table tbody").append(html);
+					}
+				},
+				Build.prototype.clear = function (){
+					$(".modal-body input").val("");
+					$("#myModal").hide()
+				}
+				Build.prototype.init = function(){
+					this.render();
+				}
+				Build.prototype.show =function(){
+					$("#myModal").show();
+				}
+				Build.prototype.hide =function(){
+					$(".modal-body input").val("");
+					$("#myModal").hide()
+				}
+				Build.prototype.getData = function(){
+					var data = $(".modal-body").serializeArray();
+					console.log(data);
+					var str = {
+						id:0,
+						name:data[0].value,
+						Province:data[1].value,
+						city:data[2].value,
+						sex:data[3].value,
+						work:data[4].value,
+						age:data[5].value
+					}
+					xx.push(str);
+				}
+				
+				
+				var run = new Build();
+				run.init();
+				
+				$("#btn_add").click(function () {
+					run.show();
+				});
+				$(".colseBtn").click(function(){
+					run.hide();
+				})
+				$("#btn_submit").click(function(){
+					run.getData();
+					run.hide();
+					run.init();
+				})
+				$("#generate-excel").click(function(){
+					var excel=new ExcelGen({"src_id":"test_table","show_header":true});
+					excel.generate();
+				});
+			});
+		</script>
+		<script type="text/javascript" src="js/jszip.js"></script>
+		<script type="text/javascript" src="js/FileSaver.js"></script>
+		<script type="text/javascript" src="js/excel-gen.js"></script>
+		<script type="text/javascript" src="js/demo.js"></script>
+</html>
